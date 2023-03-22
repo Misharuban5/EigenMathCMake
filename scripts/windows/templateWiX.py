@@ -57,6 +57,14 @@ WIX_TEMPLATE = r'''<?xml version="1.0"?>
             <Directory Id="AppRootDir" Name="$appName"/>
           </Directory>
           
+          <Directory Id="SystemFolder">
+            <!-- a folder under "C:\Windows\system32".  Will Windows allow without a subfolder? -->
+            <Component Id="AppLibraries" Guid="">
+                <File Id="cgcustommath" Name="cgcustommath.dll" Source="../../build_console/Debug/cgcustommath.dll" KeyPath="yes" >
+                </File>
+            </Component>
+          </Directory>
+          
           <Directory Id="ProgramMenuFolder">
             <Directory Id="ProgramMenuSubfolder" Name="$appName"/>
           </Directory>
@@ -70,7 +78,7 @@ WIX_TEMPLATE = r'''<?xml version="1.0"?>
         <DirectoryRef Id="AppRootDir">
             <Component Id="AppBinaries" Guid="$appExecutableGUID">
                 <File Id="AppExecutable" 
-                  Source="../../out/build/x64-Debug/$appName.exe" 
+                  Source="../../build_console/Debug/$appName.exe" 
                   KeyPath="yes" Checksum="yes"/>
                   
                 <!-- register mimetype.  
@@ -86,14 +94,12 @@ WIX_TEMPLATE = r'''<?xml version="1.0"?>
                   </Extension>
                 </ProgId>
                 
-            </Component>
-            
-            <!-- FUTURE documents
-            <Component Id="documentation.html" Guid="PUT-GUID-HERE">
-                <File Id="documentation.html" Source="MySourceFiles\documentation.html" KeyPath="yes"/>
-            </Component>
-            -->
-            
+            </Component>            
+        </DirectoryRef>
+        <DirectoryRef Id="SystemFolder">  
+          <Component Id="MyFileCopyId" Guid="">
+            <CopyFile Id="cgcustommathCopy" FileId="cgcustommath" DestinationDirectory="SystemFolder" />   
+          </Component>       
         </DirectoryRef>
         
         <DirectoryRef Id="ProgramMenuSubfolder">
@@ -116,6 +122,8 @@ WIX_TEMPLATE = r'''<?xml version="1.0"?>
         <Feature Id="AppAndShortcuts" Title="App and shortcuts" Level="1">
             <ComponentRef Id="AppBinaries" />
             <ComponentRef Id="AppStartMenuItem"/>
+            <ComponentRef Id="AppLibraries"/>
+            <ComponentRef Id="MyFileCopyId"/>
             <!-- FUTURE Documents -->
             <!-- FUTURE DesktopShortcut -->
         </Feature>

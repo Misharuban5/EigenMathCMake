@@ -8,9 +8,11 @@ This project aims to be tutorial to cmake to create a custom library and a sampl
 
 ### On Windows
 
-- Microsoft Visual Studio 2019.
-- Python 3.10.
-- WiX Toolset 3.11
+- Visual Studio 2019
+- Cmake
+- Conan
+- Wix Toolset 3.11
+- Python 3.10
 
 ### On Mac
 
@@ -32,10 +34,10 @@ $ brew install pkg-config
 $ brew install cmake
 ```
 
-- Install Eigen3 lib
+- Install conan
 
 ```
-$ brew install eigen
+$ pip3 install conan
 ```
 
 - Install create-dmg tool to create dmg installer
@@ -50,10 +52,24 @@ $ pip3 install dmgbuild
 ## Build & Testing
 
 ### On Windows
-- Open Visual Studio 2019
-- File --> Open --> Cmake: Then choose Eigen3Demo folder.
-- Project --> Configure ...
-- Then you can Build/Debug the application.
+
+- Build
+
+```
+$ conan profile detect
+$ conan install . --output-folder=build_console --build=missing -s build_type=Release
+$ cd ./build_console
+$ ./conanbuild.bat
+$ cmake .. -DCMAKE_TOOLCHAIN_FILE=./conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DEigen3_DIR="$pwd"
+$ ./deactivate_conanbuild.bat
+$ cmake --build .
+```
+
+- Create installer:
+```
+cd scripts/windows
+python3 ./scripts/windows/build_windows_installer.py
+```
 
 ### On Mac
 
@@ -62,27 +78,32 @@ $ pip3 install dmgbuild
 - Build
 
 ```
-$ mkdir build_console
-$ cd build_console
-$ cmake ../
-$ make
+$ conan profile detect
+$ conan install . --output-folder=build_console --build=missing -s build_type=Release
+$ cd ./build_console
+$ . ./conanbuild.sh
+$ cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+$ . ./deactivate_conanbuild.sh
+$ cmake --build .
 ```
 
 - Run examples
 
 ```
-// Run math without parameters
+# Run math without parameters
 $ /math.app/Contents/MacOS/math
 ```
 
-#### Build without xcode
+#### Build with xcode
 
 - Generate xcode project
 
 ```
-mkdir build_xcode
-cd build_xcode
-cmake -G Xcode -DDEBUG=ON ./.. 
+$ conan install . --output-folder=build_xcode --build=missing -s build_type=Debug
+$ cd ./build_xcode
+$ . ./conanbuild.sh
+$ cmake .. -GXcode -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug -DDEBUG=ON
+$ . ./deactivate_conanbuild.sh 
 ```
 
 - Open `cgcustommath.xcodeproj` in `./build_xcode` by xcode
@@ -91,22 +112,15 @@ cmake -G Xcode -DDEBUG=ON ./..
 ### On Mac
 ```
 # Build bundle
-$ mkdir release
-$ cd release
-$ cmake ./..
-$ make
-```
-## Build & Testing
+$ conan profile detect
+$ conan install . --output-folder=generate --build=missing -s build_type=Release
+$ cd ./generate
+$ . ./conanbuild.sh
+$ cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+$ . ./deactivate_conanbuild.sh
+$ cmake --build .
 
-### On Windows
-```
-# Run script to create msi-file
-python3 ./../scripts/windows/build_windows_installer.py
-```
 
-### On Mac
-
-```
 # Run script to create dmg-file
 python3 ./../scripts/mac/create_dmg.py ./
 ```

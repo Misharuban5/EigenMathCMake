@@ -30,15 +30,24 @@ def prepare(path):
     
     # prepare bundle tmp folder
     bundle_path = os.path.join(path, APP_BUNDLE)
+    lib_path =  os.path.join(path, "libcgcustommath.dylib")
     
     #shutil.copytree(bundle_path, bundle_tmp_path)
     os.system("cp -rf " + bundle_path + " " + bundle_tmp_path)
+    os.system("cp " + lib_path + " " + bundle_tmp_path)
 
 def create_dmg(path):
     target = os.path.join(path , APP_INSTALL_FILE)
     app_path = os.path.join(path , APP_BUNDLE)
+    lib_path =  os.path.join(path, "libcgcustommath.dylib")
     dmgbuild.build_dmg(
-        str(target), APP_NAME, str(Path(__file__).parent / "settings.py"),defines={"app":app_path}
+        str(target), 
+        APP_NAME, 
+        str(Path(__file__).parent / "settings.py"),
+        defines={
+            "app":app_path,
+            "lib":lib_path
+        }
     )
 
 # Parsing input

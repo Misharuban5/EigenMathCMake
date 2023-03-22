@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 project(cgcustommath)
 
 # this depends on eigen3 3.4
-# find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+# find_package(Eigen3 3.4)
 
 set(APP_NAME math)
 set(LIB_NAME cgcustommath)
@@ -30,6 +31,13 @@ else()
       src/cgcustommath.cpp)
 endif()
 
+add_library(${LIB_NAME} SHARED 
+      include/cgcustommath.hpp 
+      src/cgcustommath.cpp
+  )
+
+message(EIGEN3_INCLUDE_DIRS="${Eigen3_INCLUDE_DIRS}")
+include_directories( ${Eigen3_INCLUDE_DIRS})
 include_directories(include)
 
 #install(TARGETS ${APP_NAME} RUNTIME DESTINATION bin COMPONENT apps)
@@ -44,7 +52,7 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
 set(CPACK_PACKAGE_VERSION "1.0.0")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "0")
-  set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "CPack Component Example")
 
 set(CPACK_COMPONENT_LIB_DISPLAY_NAME "Library")

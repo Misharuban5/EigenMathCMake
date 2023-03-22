@@ -15,8 +15,9 @@ import plistlib
 # .. Useful stuff ..............................................................
 
 application = defines.get("app", "/System/Applications/math.app")  # noqa: F821
+library = defines.get("lib", "")  # noqa: F821
 appname = os.path.basename(application)
-
+libname = os.path.basename(library)
 
 def icon_from_app(app_path):
     plist_path = os.path.join(app_path, "Contents", "Info.plist")
@@ -48,10 +49,10 @@ format = defines.get("format", "UDBZ")  # noqa: F821
 size = defines.get("size", None)  # noqa: F821
 
 # Files to include
-files = [application]
+files = [application, library]
 
 # Symlinks to create
-symlinks = {"Applications": "/Applications"}
+symlinks = {"Applications": "/Applications", "Library" : "/Library/Frameworks"}
 
 # Files to hide
 # hide = [ 'Secret.data' ]
@@ -70,7 +71,7 @@ symlinks = {"Applications": "/Applications"}
 # badge_icon = icon_from_app(application)
 
 # Where to put the icons
-icon_locations = {appname: (140, 120), "Applications": (500, 120)}
+icon_locations = {appname: (140, 120), "Applications": (500, 120), libname: (140, 300), "Library": (500, 300)}
 
 # .. Window configuration ......................................................
 
@@ -104,7 +105,7 @@ show_sidebar = False
 sidebar_width = 180
 
 # Window position in ((x, y), (w, h)) format
-window_rect = ((100, 100), (640, 280))
+window_rect = ((100, 100), (640, 440))
 
 # Select the default view; must be one of
 #
